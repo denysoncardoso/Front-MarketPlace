@@ -1,0 +1,35 @@
+<div class="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+  <div class="bg-white rounded shadow p-4 w-100" style="max-width: 450px;">
+    <h1 class="h4 fw-bold text-center mb-3">Criar Conta</h1>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label">Razão Social</label>
+        <input formControlName="name" type="text" class="form-control" placeholder="Sua empresa" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">E-mail</label>
+        <input formControlName="email" type="email" class="form-control" placeholder="your@email.com" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Senha</label>
+        <input formControlName="password" type="password" class="form-control" placeholder="••••••••" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Tipo de Conta</label>
+        <select formControlName="role" class="form-select">
+          <option value="0">Farmácia (Comprador)</option>
+          <option value="1">Fornecedor (Vendedor)</option>
+        </select>
+      </div>
+      @if (error) {
+        <div class="alert alert-danger py-2 mb-3 small">{{ error }}</div>
+      }
+      <button type="submit" [disabled]="loading" class="btn btn-primary w-100">
+        {{ loading ? 'Criando conta...' : 'Criar Conta' }}
+      </button>
+    </form>
+    <p class="text-center text-muted small mt-3">
+      Já tem uma conta? <a routerLink="/login" class="text-primary text-decoration-none">Entrar</a>
+    </p>
+  </div>
+</div>

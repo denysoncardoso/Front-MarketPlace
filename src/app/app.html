@@ -1,0 +1,35 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" routerLink="/">PharmaB2B</a>
+    @if (isLoggedIn()) {
+      <div class="navbar-nav me-auto ms-3 gap-2">
+        @for (link of navLinks; track link.path) {
+          <a [routerLink]="link.path"
+             routerLinkActive="underline text-white"
+             [routerLinkActiveOptions]="{ exact: false }"
+             class="nav-link">
+            {{ link.label }}
+          </a>
+        }
+      </div>
+    }
+    <div class="d-flex align-items-center gap-2">
+      @if (isLoggedIn()) {
+        <span class="badge bg-primary-subtle text-dark">{{ username() }}</span>
+        <span class="badge bg-dark">{{ userRole() }}</span>
+        <button (click)="logout()" class="btn btn-sm btn-danger">
+          Sair
+        </button>
+      } @else {
+        <a routerLink="/login" class="btn btn-sm btn-outline-light">Login</a>
+        <a routerLink="/register" class="btn btn-sm btn-outline-light">Registrar</a>
+      }
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="container py-4">
+  <router-outlet></router-outlet>
+</main>

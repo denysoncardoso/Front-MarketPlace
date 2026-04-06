@@ -1,0 +1,43 @@
+<div>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h4 fw-bold">Catálogo de Produtos</h1>
+  </div>
+
+  <!-- Search -->
+  <div class="mb-4">
+    <div class="input-group" style="max-width: 400px;">
+      <span class="input-group-text">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="text-muted" viewBox="0 0 16 16">
+          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+        </svg>
+      </span>
+      <input [(ngModel)]="search" (ngModelChange)="onSearch()" type="text" class="form-control" placeholder="Buscar produtos..." />
+    </div>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2 text-muted">Carregando produtos...</p>
+    </div>
+  } @else {
+    <!-- Products Grid -->
+    <div class="row g-4">
+      @for (product of products(); track product.id) {
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+          <app-product-card
+            [product]="product"
+            [showAddToCart]="true"
+            (addToCart)="onAddToCart($event)" />
+        </div>
+      } @empty {
+        <div class="col-12 text-center py-5 text-muted">
+          Nenhum produto encontrado.
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,31 @@
+<div class="d-flex align-items-center justify-content-center min-vh-100 bg-light">
+  <div class="bg-white rounded shadow p-4 w-100" style="max-width: 450px;">
+    <h1 class="h4 fw-bold text-center mb-2">Mercado B2B Farmacêutico</h1>
+    <h2 class="h6 text-center text-muted mb-3">Acesse sua conta</h2>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input formControlName="email" type="email" class="form-control" placeholder="your@email.com" />
+        @if (form.get('email')?.touched && form.get('email')?.invalid) {
+          <div class="text-danger small mt-1">E-mail válido obrigatório</div>
+        }
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input formControlName="password" type="password" class="form-control" placeholder="••••••••" />
+        @if (form.get('password')?.touched && form.get('password')?.invalid) {
+          <div class="text-danger small mt-1">Senha (mín. 6 caracteres) obrigatória</div>
+        }
+      </div>
+      @if (error) {
+        <div class="alert alert-danger py-2 mb-3 small">{{ error }}</div>
+      }
+      <button type="submit" [disabled]="loading" class="btn btn-primary w-100">
+        {{ loading ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+    <p class="text-center text-muted small mt-3">
+      Não tem uma conta? <a routerLink="/register" class="text-primary text-decoration-none">Registrar</a>
+    </p>
+  </div>
+</div>
