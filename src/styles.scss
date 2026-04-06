@@ -1,1 +1,12 @@
-@import 'bootstrap/dist/css/bootstrap.min.css';
+@use 'styles/variables';
+@use 'bootstrap/scss/bootstrap';
+@use 'bootstrap-icons/font/bootstrap-icons';
+@use 'styles/overrides';
+
+@font-face {
+  font-display: swap;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+}

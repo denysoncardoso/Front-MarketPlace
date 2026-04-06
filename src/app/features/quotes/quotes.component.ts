@@ -1,6 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PageHeaderComponent } from '../../shared/components/page-header.component';
+import { StatusBadgeComponent } from '../../shared/components/status-badge.component';
 import { AuthService } from '../../core/services/auth.service';
 import {
   QuoteService,
@@ -14,7 +16,7 @@ import {
 @Component({
   selector: 'app-quotes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PageHeaderComponent, StatusBadgeComponent],
   templateUrl: './quotes.component.html'
 })
 export class QuotesComponent implements OnInit {
@@ -79,5 +81,10 @@ export class QuotesComponent implements OnInit {
 
   label(s: number): string {
     return QUOTE_STATUS_LABELS[s] ?? 'Desconhecido';
+  }
+
+  toStatusType(s: number): string {
+    const map: Record<number, string> = { 0: 'OPEN', 1: 'ANSWERED', 2: 'APPROVED' };
+    return map[s] ?? 'PENDING';
   }
 }

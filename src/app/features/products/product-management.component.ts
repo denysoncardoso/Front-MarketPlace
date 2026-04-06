@@ -1,20 +1,20 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { ProductService, ProductDto, CreateProductRequest, UpdateProductRequest } from '../../core/services/product.service';
-
-interface ProductForm {
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  unit: string;
-}
+import { PageHeaderComponent } from '../../shared/components/page-header.component';
+import { StatusBadgeComponent } from '../../shared/components/status-badge.component';
+import { ConfirmModalComponent } from '../../shared/components/confirm-modal.component';
+import {
+  ProductService,
+  ProductDto,
+  CreateProductRequest,
+  UpdateProductRequest
+} from '../../core/services/product.service';
 
 @Component({
   selector: 'app-product-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, PageHeaderComponent],
   templateUrl: './product-management.component.html'
 })
 export class ProductManagementComponent implements OnInit {
@@ -93,11 +93,9 @@ export class ProductManagementComponent implements OnInit {
     }
   }
 
-  async onDelete(id: string): Promise<void> {
-    if (!confirm('Desativar este produto?')) return;
-    try {
-      await this.productService.delete(id);
-      await this.load();
-    } catch { }
+  onDelete(id: string): void {
+    if (confirm('Desativar este produto?')) {
+      this.productService.delete(id).then(() => this.load());
+    }
   }
 }

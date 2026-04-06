@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PageHeaderComponent } from '../../shared/components/page-header.component';
 import { ProductCardComponent, ProductCardData } from '../../shared/components/product-card.component';
 import { ProductService, ProductDto } from '../../core/services/product.service';
 import { CartService } from '../../core/services/cart.service';
@@ -8,7 +9,7 @@ import { CartService } from '../../core/services/cart.service';
 @Component({
   selector: 'app-catalog',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProductCardComponent],
+  imports: [CommonModule, FormsModule, PageHeaderComponent, ProductCardComponent],
   templateUrl: './catalog.component.html'
 })
 export class CatalogComponent implements OnInit {

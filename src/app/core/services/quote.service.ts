@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { MockDataService } from './mock-data.service';
 
 const API = 'http://localhost:5000/api';
 
@@ -48,20 +49,37 @@ export const QUOTE_STATUS_LABELS: Record<number, string> = {
 @Injectable({ providedIn: 'root' })
 export class QuoteService {
   private http = inject(HttpClient);
+  private mock = inject(MockDataService);
 
   async getQuotes(): Promise<QuoteRequestDto[]> {
-    return firstValueFrom(this.http.get<QuoteRequestDto[]>(`${API}/quotes`));
+    try {
+      return await firstValueFrom(this.http.get<QuoteRequestDto[]>(`${API}/quotes`));
+    } catch {
+      return this.mock.getQuotes();
+    }
   }
 
   async create(req: CreateQuoteRequest): Promise<QuoteRequestDto> {
-    return firstValueFrom(this.http.post<QuoteRequestDto>(`${API}/quotes`, req));
+    try {
+      return await firstValueFrom(this.http.post<QuoteRequestDto>(`${API}/quotes`, req));
+    } catch {
+      return await this.mock.createQuote(req);
+    }
   }
 
   async respond(id: string, req: CreateQuoteResponse): Promise<QuoteResponseDto> {
-    return firstValueFrom(this.http.post<QuoteResponseDto>(`${API}/quotes/${id}/responses`, req));
+    try {
+      return await firstValueFrom(this.http.post<QuoteResponseDto>(`${API}/quotes/${id}/responses`, req));
+    } catch {
+      return await this.mock.respondQuote(id, req);
+    }
   }
 
   async getResponses(id: string): Promise<QuoteResponseDto[]> {
-    return firstValueFrom(this.http.get<QuoteResponseDto[]>(`${API}/quotes/${id}/responses`));
+    try {
+      return await firstValueFrom(this.http.get<QuoteResponseDto[]>(`${API}/quotes/${id}/responses`));
+    } catch {
+      return this.mock.getQuoteResponses(id);
+    }
   }
 }

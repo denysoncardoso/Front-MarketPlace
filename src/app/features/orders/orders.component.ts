@@ -1,15 +1,19 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PageHeaderComponent } from '../../shared/components/page-header.component';
+import { StatusBadgeComponent } from '../../shared/components/status-badge.component';
 import { OrderService, OrderDto, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '../../core/services/order.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PageHeaderComponent],
   templateUrl: './orders.component.html'
 })
 export class OrdersComponent implements OnInit {
   private orderService = inject(OrderService);
+  private auth = inject(AuthService);
   orders = signal<OrderDto[]>([]);
   loading = signal(true);
   expandedOrder = signal<string | null>(null);
@@ -36,10 +40,10 @@ export class OrdersComponent implements OnInit {
   }
 
   color(status: number): string {
-    return ORDER_STATUS_COLORS[status] ?? 'bg-gray-100 text-gray-800';
+    return ORDER_STATUS_COLORS[status] ?? 'bg-secondary-subtle text-secondary';
   }
 
-  dateStr(d: string): string {
-    return new Date(d).toLocaleDateString();
+  isSupplier(): boolean {
+    return this.auth.isSupplier();
   }
 }

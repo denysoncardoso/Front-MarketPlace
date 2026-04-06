@@ -1,0 +1,64 @@
+# Pharma B2B Marketplace — UI System
+
+## Stack de UI
+- **SCSS Framework:** Bootstrap 5.3+
+- **Ícones:** Bootstrap Icons (bi bi-*)
+- **Fontes:** Inter (Google Fonts) — sans-serif profissional
+- **Angular:** 20+, Standalone Components, Signals
+- **Sem dependências extras de UI** — apenas Bootstrap puro + customização via SCSS
+
+## Princípios de Design
+
+### Paleta de cores (customizar Bootstrap via SCSS)
+```scss
+// src/styles/_variables.scss
+$primary:   #0A2540;   // azul escuro institucional
+$secondary: #2563EB;   // azul ação
+$success:   #059669;
+$warning:   #D97706;
+$danger:    #DC2626;
+$light:     #F8FAFC;
+$dark:      #0F172A;
+
+$body-bg:         #F1F5F9;
+$body-color:      #1E293B;
+$card-border-radius: 0.75rem;
+$border-radius:      0.5rem;
+$box-shadow:      0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+$font-family-sans-serif: 'Inter', system-ui, sans-serif;
+```
+
+### Sistema de layout
+- Sidebar fixa (260px) + área de conteúdo principal
+- Navbar superior com breadcrumb e ações contextuais
+- Cards com `shadow-sm` e `border-0` — nunca `border` padrão Bootstrap
+- Tabelas com `table-hover` + cabeçalhos `bg-light fw-semibold`
+- Formulários com labels flutuantes (`form-floating`) onde possível
+
+### Componentes obrigatórios (shared/)
+- `AppSidebarComponent` — nav lateral com ícones + labels, ativo por rota
+- `AppNavbarComponent` — topo com avatar, notificações, breadcrumb
+- `PageHeaderComponent` — título da página + botão de ação primária
+- `DataTableComponent` — tabela genérica com paginação e busca
+- `StatCardComponent` — card de métrica com ícone, valor, delta %
+- `StatusBadgeComponent` — badge dinâmico por status (PENDING, APPROVED, etc.)
+- `ConfirmModalComponent` — modal de confirmação reutilizável
+- `EmptyStateComponent` — estado vazio com ícone e CTA
+
+### Regras de estilo
+- Botões primários: `btn btn-primary px-4` — nunca outline como ação principal
+- Botões destrutivos: `btn btn-danger` apenas em modais de confirmação
+- Ícones: sempre Bootstrap Icons, tamanho 16px inline, 20px em botões standalone
+- Espaçamento de página: `container-fluid px-4 py-4`
+- Seções de card: `card border-0 shadow-sm mb-4`
+- Formulários: `row g-3` para layout de campos
+- Tabelas vazias: sempre mostrar `EmptyStateComponent`, nunca tabela vazia
+- Loading: skeleton loaders com `placeholder-glow`, nunca spinner global
+
+## O que NÃO fazer
+- Não usar `style=""` inline para cores — apenas classes Bootstrap ou SCSS
+- Não misturar Tailwind com Bootstrap
+- Não usar `table` sem `table-responsive` wrapper
+- Não criar modais com `display:none` manual — usar `bootstrap.Modal` JS API
+- Não usar cores fora da paleta definida em `_variables.scss`
+- Não usar `row` sem `g-*` (gutters) definido

@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { MockDataService } from './mock-data.service';
 
 const API = 'http://localhost:5000/api';
 
@@ -44,23 +45,42 @@ export const ORDER_STATUS_COLORS: Record<number, string> = {
 @Injectable({ providedIn: 'root' })
 export class OrderService {
   private http = inject(HttpClient);
+  private mock = inject(MockDataService);
   orders = signal<OrderDto[]>([]);
 
   async create(): Promise<OrderDto> {
-    return firstValueFrom(this.http.post<OrderDto>(`${API}/orders`, {}));
+    try {
+      return await firstValueFrom(this.http.post<OrderDto>(`${API}/orders`, {}));
+    } catch {
+      return await this.mock.createOrder();
+    }
   }
 
   async getAll(): Promise<OrderDto[]> {
-    const data = await firstValueFrom(this.http.get<OrderDto[]>(`${API}/orders`));
-    this.orders.set(data);
-    return data;
+    try {
+      const data = await firstValueFrom(this.http.get<OrderDto[]>(`${API}/orders`));
+      this.orders.set(data);
+      return data;
+    } catch {
+      const data = this.mock.getOrders();
+      this.orders.set(data);
+      return data;
+    }
   }
 
   async getById(id: string): Promise<OrderDto | undefined> {
-    return firstValueFrom(this.http.get<OrderDto>(`${API}/orders/${id}`));
+    try {
+      return await firstValueFrom(this.http.get<OrderDto>(`${API}/orders/${id}`));
+    } catch {
+      return this.mock.getOrders().find(o => o.id === id);
+    }
   }
 
   async updateStatus(id: string, status: number): Promise<OrderDto> {
-    return firstValueFrom(this.http.patch<OrderDto>(`${API}/orders/${id}/status`, { status }));
+    try {
+      return await firstValueFrom(this.http.patch<OrderDto>(`${API}/orders/${id}/status`, { status }));
+    } catch {
+      throw new Error('Função não disponível no modo demonstração');
+    }
   }
 }

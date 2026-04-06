@@ -1,102 +1,122 @@
-<div>
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h4 fw-bold">Gestão de Produtos</h1>
-    <button (click)="openCreate()" class="btn btn-primary">+ Novo Produto</button>
-  </div>
+<app-page-header title="Gestão de Produtos" subtitle="Gerencie seu catálogo de produtos">
+  <button (click)="openCreate()" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-1"></i>Novo Produto
+  </button>
+</app-page-header>
 
-  @if (error()) {
-    <div class="alert alert-danger">{{ error() }}</div>
-  }
+@if (error()) {
+  <div class="alert alert-danger">{{ error() }}</div>
+}
 
-  @if (loading()) {
-    <div class="text-center py-5">
-      <div class="spinner-border text-primary" role="status"></div>
-    </div>
-  } @else {
-    <div class="card shadow-sm">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr>
-              <th>Nome</th>
-              <th>Preço</th>
-              <th>Estoque</th>
-              <th>Unidade</th>
-              <th>Status</th>
-              <th class="text-center">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (p of products(); track p.id) {
-              <tr>
-                <td class="fw-semibold">{{ p.name }}</td>
-                <td>R$ {{ p.price | number:'1.2-2' }}</td>
-                <td>{{ p.stock | number }}</td>
-                <td>{{ p.unit }}</td>
-                <td>
-                  @if (p.isActive) {
-                    <span class="badge bg-success-subtle text-success">Ativo</span>
-                  } @else {
-                    <span class="badge bg-danger-subtle text-danger">Inativo</span>
-                  }
-                </td>
-                <td class="text-center">
-                  <button (click)="openEdit(p)" class="btn btn-sm btn-outline-primary me-1">Editar</button>
-                  <button (click)="onDelete(p.id)" class="btn btn-sm btn-outline-danger">Excluir</button>
-                </td>
-              </tr>
-            } @empty {
-              <tr><td colspan="6" class="text-center text-muted py-4">Nenhum produto cadastrado. Crie um!</td></tr>
-            }
-          </tbody>
-        </table>
+@if (loading()) {
+  <div class="card shadow-sm p-4">
+    @for (_ of [1,2,3,4,5]; track $index) {
+      <div class="d-flex gap-3 mb-3">
+        <span class="placeholder col-3"></span>
+        <span class="placeholder col-2"></span>
+        <span class="placeholder col-1"></span>
+        <span class="placeholder col-1"></span>
       </div>
+    }
+  </div>
+} @else if (products().length === 0) {
+  <div class="card shadow-sm text-center py-5 text-muted">
+    <i class="bi bi-box-seam" style="font-size:2rem"></i>
+    <div class="mt-2">Nenhum produto cadastrado. Crie um!</div>
+  </div>
+} @else {
+  <div class="card shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Unidade</th>
+            <th>Status</th>
+            <th class="text-center">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of products(); track p.id) {
+            <tr>
+              <td class="fw-semibold">{{ p.name }}</td>
+              <td>R$ {{ p.price | number:'1.2-2' }}</td>
+              <td>{{ p.stock | number }}</td>
+              <td class="text-muted">{{ p.unit }}</td>
+              <td>
+                @if (p.isActive) {
+                  <span class="badge bg-success-subtle text-success rounded-pill">Ativo</span>
+                } @else {
+                  <span class="badge bg-danger-subtle text-danger rounded-pill">Inativo</span>
+                }
+              </td>
+              <td class="text-center">
+                <button (click)="openEdit(p)" class="btn btn-sm btn-outline-primary me-1" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button (click)="onDelete(p.id)" class="btn btn-sm btn-outline-danger" title="Desativar">
+                  <i class="bi bi-toggle-off"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
-  }
+  </div>
+}
 
-  <!-- Modal -->
-  @if (showForm()) {
-    <div class="modal fade show d-block" tabindex="-1" (click)="closeModal()" style="background:rgba(0,0,0,0.5)">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" (click)="$event.stopPropagation()">
-          <div class="modal-header">
-            <h5 class="modal-title">{{ editingId() ? 'Editar Produto' : 'Novo Produto' }}</h5>
-            <button type="button" class="btn-close" (click)="closeModal()"></button>
-          </div>
-          <div class="modal-body">
-            <form (ngSubmit)="onSave()">
-              <div class="mb-3">
-                <label class="form-label">Nome</label>
-                <input [formControl]="form.controls.name" type="text" class="form-control" />
+<!-- Modal -->
+@if (showForm()) {
+  <div class="modal fade show d-block" tabindex="-1" (click)="closeModal()" style="background:rgba(0,0,0,0.5)">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ editingId() ? 'Editar Produto' : 'Novo Produto' }}</h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="onSave()">
+            <div class="row g-3">
+              <div class="col-12 form-floating">
+                <input [formControl]="form.controls.name" type="text" id="prodName" class="form-control" placeholder="Nome" />
+                <label for="prodName" class="text-muted">Nome</label>
               </div>
-              <div class="mb-3">
-                <label class="form-label">Descrição</label>
-                <textarea [formControl]="form.controls.description" class="form-control" rows="2"></textarea>
+              <div class="col-12 form-floating">
+                <textarea [formControl]="form.controls.description" class="form-control" id="prodDesc" rows="2" placeholder="Descrição"></textarea>
+                <label for="prodDesc" class="text-muted">Descrição</label>
               </div>
-              <div class="row g-3 mb-3">
-                <div class="col-6">
-                  <label class="form-label">Price (R$)</label>
-                  <input [formControl]="form.controls.price" type="number" step="0.01" min="0.01" class="form-control" />
-                </div>
-                <div class="col-6">
-                  <label class="form-label">Estoque</label>
-                  <input [formControl]="form.controls.stock" type="number" min="0" class="form-control" />
-                </div>
+              <div class="col-md-4 form-floating">
+                <input [formControl]="form.controls.price" type="number" step="0.01" min="0.01" id="prodPrice" class="form-control" placeholder="Preço" />
+                <label for="prodPrice" class="text-muted">Preço (R$)</label>
               </div>
-              <div class="mb-3">
-                <label class="form-label">Unidade</label>
-                <input [formControl]="form.controls.unit" type="text" class="form-control" placeholder="cx, frasco, etc" />
+              <div class="col-md-4 form-floating">
+                <input [formControl]="form.controls.stock" type="number" min="0" id="prodStock" class="form-control" placeholder="Estoque" />
+                <label for="prodStock" class="text-muted">Estoque</label>
               </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Cancelar</button>
-            <button type="button" class="btn btn-primary" [disabled]="form.invalid || saving()" (click)="onSave()">
-              {{ saving() ? 'Salvando...' : 'Salvar' }}
-            </button>
-          </div>
+              <div class="col-md-4 form-floating">
+                <input [formControl]="form.controls.unit" type="text" id="prodUnit" class="form-control" placeholder="Unidade" />
+                <label for="prodUnit" class="text-muted">Unidade</label>
+              </div>
+            </div>
+          </form>
+        </div>
+        @if (error()) {
+          <div class="alert alert-danger mx-4 mb-0 small">{{ error() }}</div>
+        }
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="closeModal()">Cancelar</button>
+          <button type="button" class="btn btn-primary" [disabled]="form.invalid || saving()" (click)="onSave()">
+            @if (saving()) {
+              <span class="spinner-border spinner-border-sm me-1" style="width:16px;height:16px"></span>
+            }
+            {{ saving() ? 'Salvando...' : 'Salvar' }}
+          </button>
         </div>
       </div>
     </div>
-  }
-</div>
+  </div>
+  <div class="modal-backdrop fade show"></div>
+}

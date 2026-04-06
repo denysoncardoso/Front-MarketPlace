@@ -30,6 +30,21 @@ interface AuthState {
   token: string;
 }
 
+export const MOCK_USERS: { email: string; password: string; role: string; token: string }[] = [
+  {
+    email: 'farmacia@demo.com.br',
+    password: '123456',
+    role: 'Pharmacy',
+    token: 'mock-token-pharmacy-abc123',
+  },
+  {
+    email: 'fornecedor@demo.com.br',
+    password: '123456',
+    role: 'Supplier',
+    token: 'mock-token-supplier-def456',
+  },
+];
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
@@ -57,17 +72,42 @@ export class AuthService {
   }
 
   async login(login: LoginRequest): Promise<void> {
-    const response = await firstValueFrom(
-      this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, login)
-    );
-    this.saveSession(response);
+    try {
+      const response = await firstValueFrom(
+        this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, login)
+      );
+      this.saveSession(response);
+    } catch {
+      // Fallback para mock
+      const user = MOCK_USERS.find(u => u.email === login.email && u.password === login.password);
+      if (!user) {
+        throw new Error('E-mail ou senha inválidos.');
+      }
+      this.saveSession({
+        token: user.token,
+        email: user.email,
+        role: user.role,
+        expiresAt: new Date(Date.now() + 86400000).toISOString(),
+      });
+    }
   }
 
   async register(register: RegisterRequest): Promise<void> {
-    const response = await firstValueFrom(
-      this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, register)
-    );
-    this.saveSession(response);
+    try {
+      const response = await firstValueFrom(
+        this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, register)
+      );
+      this.saveSession(response);
+    } catch {
+      // Fallback para mock
+      const roleStr = register.role === 0 ? 'Pharmacy' : 'Supplier';
+      this.saveSession({
+        token: `mock-token-${roleStr.toLowerCase()}`,
+        email: register.email,
+        role: roleStr,
+        expiresAt: new Date(Date.now() + 86400000).toISOString(),
+      });
+    }
   }
 
   logout(): void {

@@ -1,19 +1,21 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { PageHeaderComponent } from '../../shared/components/page-header.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state.component';
 import { CartService, CartItemDto } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PageHeaderComponent, EmptyStateComponent],
   templateUrl: './cart.component.html'
 })
 export class CartComponent implements OnInit {
   private cartService = inject(CartService);
   private orderService = inject(OrderService);
-  private router = inject(Router);
+  router = inject(Router);
   items = signal<CartItemDto[]>([]);
   loading = signal(true);
   checkingOut = signal(false);
